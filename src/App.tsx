@@ -1,19 +1,9 @@
 import { useState } from "react"
 import { v4 as uuid } from "uuid"
-import { CheckCircle, Circle, PlusCircle, Trash } from "phosphor-react"
+import { PlusCircle } from "phosphor-react"
 
 import { Logo } from "./components/Logo"
 import { ClipboardIcon } from "./components/ClipboardIcon"
-
-enum UncheckedBoxWeight {
-  default = 'bold',
-  hover = 'duotone'
-}
-
-enum CheckedBoxBackgroundColor {
-  default = '#5E60CE',
-  hover = '#8284FA'
-}
 
 type Task = {
   id: string;
@@ -22,8 +12,6 @@ type Task = {
 }
 
 function App() {
-  const [uncheckedBoxWeightState, setUncheckedBoxWeightState] = useState<UncheckedBoxWeight>(UncheckedBoxWeight.default)
-  const [checkedBoxBgColorState, setCheckedBoxBgColorState] = useState<CheckedBoxBackgroundColor>(CheckedBoxBackgroundColor.default)
   const [newTask, setNewTask] = useState('')
   const [tasks, setTasks] = useState<Task[]>([])
   const numberOfCompletedTasks = tasks.filter(task => task.isCompleted).length
@@ -33,20 +21,9 @@ function App() {
     setNewTask('')
   }
 
-  function handleCheckboxHoverState(isCompleted: boolean) {
-    if(isCompleted) {
-      if(checkedBoxBgColorState === CheckedBoxBackgroundColor.default) {
-        setCheckedBoxBgColorState(CheckedBoxBackgroundColor.hover)
-      } else {
-        setCheckedBoxBgColorState(CheckedBoxBackgroundColor.default)
-      }
-    } else {
-      if(uncheckedBoxWeightState === UncheckedBoxWeight.default) {
-        setUncheckedBoxWeightState(UncheckedBoxWeight.hover)
-      } else {
-        setUncheckedBoxWeightState(UncheckedBoxWeight.default)
-      }
-    }
+  function handleDeleteTask(id: string) {
+    const newTasks = tasks.filter(task => task.id !== id)
+    setTasks(newTasks)
   }
 
   function handleCheckboxClick(id: string) {
@@ -125,28 +102,29 @@ function App() {
                     >
                       <>
                         {task.isCompleted ? (
-                          <button
-                            onMouseEnter={() => handleCheckboxHoverState(task.isCompleted)}
-                            onMouseLeave={() => handleCheckboxHoverState(task.isCompleted)}
+                          <button 
                             onClick={() => handleCheckboxClick(task.id)}
+                            className="flex items-center justify-center"
                           >
-                            <CheckCircle size={24} color={checkedBoxBgColorState} weight="fill"/>
+                            <i className="ph-check-circle-fill text-2xl text-brand-purple-dark hover:text-brand-purple" />
                           </button>
                         ) : (
-                          <button
-                            onMouseEnter={() => handleCheckboxHoverState(task.isCompleted)}
-                            onMouseLeave={() => handleCheckboxHoverState(task.isCompleted)}
+                          <button 
                             onClick={() => handleCheckboxClick(task.id)}
+                            className="flex items-center justify-center"
                           >
-                            <Circle size={24} color="#4EA8DE" weight={uncheckedBoxWeightState} />
+                            <i className="ph-circle-bold text-2xl text-brand-blue hover:text-brand-blue-dark" />
                           </button>
                         )}
                       </>
 
                       <p className="flex-1 text-sm text-gray-100 text-justify">{task.description}</p>
 
-                      <button className="p-[2px] hover:rounded-[4px] hover:bg-gray-400">
-                        <Trash size={24} color="#808080" />
+                      <button 
+                        className="group p-[3px] flex items-center justify-center rounded-[4px] hover:bg-gray-400"
+                        onClick={() => handleDeleteTask(task.id)}
+                      >
+                        <i className="ph-trash-bold text-2xl text-gray-300 group-hover:text-brand-danger" />
                       </button>
                     </div>
                   ))}                
