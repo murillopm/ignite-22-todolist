@@ -14,6 +14,7 @@ type Task = {
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
+  const hasAnyTasks = tasks.length
   const numberOfCompletedTasks = tasks.filter(task => task.isCompleted).length
 
   function handleAddTask(task: Task) {
@@ -43,9 +44,8 @@ function App() {
         <TaskCreator addTask={handleAddTask}/>
         <section className="w-full mt-16">
           <ProgressBar totalTasks={tasks.length} completedTasks={numberOfCompletedTasks}/>
-
           <div className="flex flex-col gap-3">
-            {tasks.length === 0 ? (
+            {!hasAnyTasks ? (
               <div className="w-full py-16 flex flex-col justify-center items-center gap-4">
                 <ClipboardIcon />
                 <p className="text-gray-300 text-center">
